@@ -1,0 +1,34 @@
+# -- Makefile for PROXYARP.EXE
+
+ASM     =  tasm
+CC      =  bcc
+LINKER  =  tlink
+LIBRARY =  tlib
+LIB     =  pktdrv.lib
+OPTION  =  -1 -O -G -Z -d -w
+
+OBJ     =  bridge.obj pktinit.obj rawpkt.obj asmtool.obj
+
+
+all          :  bridge.exe pktdrv.lib
+clean        :
+                -del $(OBJ) $(LIB) bridge.exe pktdrv.obj
+
+bridge.exe   :  $(OBJ) pktdrv.lib
+                $(CC) $(OPTION) -e$@ $**
+
+.c.obj       :
+                $(CC) -c $(OPTION) $<
+
+.cc.obj      :
+                $(CC) -c -P $(OPTION) $<
+
+.asm.obj     :
+                $(ASM) -ml -w2 $<;
+
+.obj.lib     :
+                $(LIBRARY) $@-+$<
+
+pktdrv.lib   :  pktdrv.obj
+                $(LIBRARY) /C $@ -+ $**
+
